@@ -1,6 +1,6 @@
 FROM python:3
-COPY ./app
+COPY . /app
 WORKDIR /app
 RUN pip install -r requirnments.txt
 EXPOSE 5000
-CMD python/app/app.py
+CMD flask run --host 0.0.0.0

@@ -1,0 +1,31 @@
+---
+version: '3'
+services: 
+  db:
+    image: postgres
+    restart: always
+    environment: 
+     - POSTGRES_PASSWORD=mypassword
+     - APP_DB_NAME=todo_db
+    volumes:
+     - ./db:/docker-entrypoint-initdb.d/
+     - ./db_data1:/var/lib/postgresql/data
+    ports:
+     - 5432:5432
+
+  service1:
+    build: ./ToDo
+    ports: 
+     - 4020:5000
+
+  service2:
+    build: ./Efficiency
+    ports:
+      - 4021:5000
+
+  
+
+
+     
+
+

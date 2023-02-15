@@ -5,7 +5,7 @@ from urllib.parse import quote_plus
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:%s@localhost/todo_db' %quote_plus("Bruno@9090")
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:mypassword@db/todo_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.app_context().push() 
@@ -37,6 +37,6 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3000)
+    app.run(debug=True, port=3001)
 
 
