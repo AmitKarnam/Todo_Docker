@@ -1,10 +1,108 @@
 ---
 version: '3'
-services: 
+services:
+  consul-server1:
+    image: hashicorp/consul
+    container_name: consul-server1
+    restart: always
+    volumes:
+     - ./server-files/server1.json:/consul/config/server.json
+    # - ./certs/:/consul/config/certs/
+    networks:
+      - consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+      - "8301:8301"
+      - "8302:8302"
+      - "8300:8300"
+    command: "agent -bootstrap-expect=3"
+
+ 
+  consul-server2:
+    image: hashicorp/consul
+    container_name: consul-server2
+    restart: always
+    volumes:
+     - ./server-files/server2.json:/consul/config/server.json
+    # - ./certs/:/consul/config/certs/
+    networks:
+      - consul
+    command: "agent -bootstrap-expect=3"
+
+ 
+  consul-server3:
+    image: hashicorp/consul
+    container_name: consul-server3
+    restart: always
+    volumes:
+     - ./server-files/server3.json:/consul/config/server.json
+    # - ./certs/:/consul/config/certs/
+    networks:
+      - consul
+    command: "agent -bootstrap-expect=3"
+
+ 
+  consul-client1:
+    image: hashicorp/consul
+    container_name: consul-client1
+    restart: always
+    volumes:
+      - ./client-files/client1.json:/consul/config/client.json
+    # - ./certs/:/consul/config/certs/  
+      - ./entrypoint-files/client1-entrypoint.sh:/docker-entrypoint.sh
+    ports:
+      - "9005:9005"
+    networks:
+      - consul
+    command: ["sh", "docker-entrypoint.sh"]
+
+    
+
+  consul-client2:
+    image: hashicorp/consul
+    container_name: consul-client2
+    restart: always
+    volumes:
+      - ./client-files/client2.json:/consul/config/client.json
+    # - ./certs/:/consul/config/certs/  
+      - ./entrypoint-files/client2-entrypoint.sh:/docker-entrypoint.sh
+    ports:
+      - "9007:9007"
+    networks:
+      - consul
+    command: ["sh","docker-entrypoint.sh"]
+
+    
+
+  consul-client3:
+    image: hashicorp/consul
+    container_name: consul-client3
+    restart: always
+    volumes:
+      - ./client-files/client3.json:/consul/config/client.json
+    # - ./certs/:/consul/config/certs/  
+      - ./entrypoint-files/client3-entrypoint.sh:/docker-entrypoint.sh
+    ports:
+      - "9008:9008"
+    networks:
+      - consul
+    command: ["sh","docker-entrypoint.sh"]
+
+  envoy:
+    image: envoyproxy/envoy:v1.19.0
+    volumes:
+      - ./envoy/envoy1.yaml:/etc/envoy/envoy.yaml
+    command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
+    ports:
+      - "8072:8072"
+    
+
   db:
     image: postgres
     restart: always
-    environment: 
+    environment:
      - POSTGRES_PASSWORD=mypassword
      - APP_DB_NAME=todo_db
     volumes:
@@ -12,20 +110,33 @@ services:
      - ./db_data1:/var/lib/postgresql/data
     ports:
      - 5432:5432
+    networks:
+      - consul
+   
 
-  service1:
+ 
+  todo_service:
     build: ./ToDo
-    ports: 
+    ports:
      - 4020:5000
+    networks:
+      - consul
+   
 
-  service2:
+ 
+  efficiency_service:
     build: ./Efficiency
     ports:
       - 4021:5000
+    networks:
+      - consul
+   
+ 
+networks:
+  consul:
+    driver: bridge
 
-  
-
-
+volumes:
+  db_data1:
      
-
 
