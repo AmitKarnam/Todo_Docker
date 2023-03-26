@@ -12,7 +12,7 @@
     "http":"0.0.0.0"
   },
   "retry_join":[
-    "consul-server1",
-    "consul-server2"
+    "consul-server2",
+    "consul-server3"
     ]
 }
